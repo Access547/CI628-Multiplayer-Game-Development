@@ -58,11 +58,6 @@ func StartGame():
 
 
 
-
-
-
-
-
 func _on_host_pressed():
 	peer = ENetMultiplayerPeer.new()
 	

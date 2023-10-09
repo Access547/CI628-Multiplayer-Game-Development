@@ -13,7 +13,7 @@ var states : Dictionary = {}
 func _ready():
 	for child in get_children():
 		if child is State:
-			states[child.name.to_lower()] = child
+			states[child.name] = child
 			child.transitioned.connect(on_child_transition)
 			child.character = character
 			child.sprite = sprite
@@ -34,7 +34,7 @@ func on_child_transition(state, newStateName):
 	if state != currentState:
 		return
 		
-	var newState = states.get(newStateName.to_lower())
+	var newState = states.get(newStateName)
 	if !newState:
 		return
 		

@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://espwmath3k0a"]
+
+[ext_resource type="Script" path="res://Scripts/Attacks/test_proj.gd" id="1_q0nax"]
+[ext_resource type="Texture2D" uid="uid://r8nqq3wx0cc8" path="res://icon.svg" id="2_2kqil"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dnwqf"]
+size = Vector2(26, 24.5)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8fe7r"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+
+[node name="TestProj" type="Area2D"]
+script = ExtResource("1_q0nax")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(13, 11)
+scale = Vector2(0.195313, 0.175781)
+texture = ExtResource("2_2kqil")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(13, 11.25)
+shape = SubResource("RectangleShape2D_dnwqf")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_8fe7r")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://cbyvj756fyetn"]
+[gd_scene load_steps=41 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
 [ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://vi6oha8iu5ft" path="res://Scenes/DebugTools/StateLabel.tscn" id="4_atqvy"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterIdleState.gd" id="4_r1sqb"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterMoveState.gd" id="5_occhi"]
+[ext_resource type="Script" path="res://Scripts/States/KnightR.gd" id="6_0r34o"]
+[ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="7_7beb4"]
+[ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="8_cc2di"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i7k61"]
 atlas = ExtResource("1_74wug")
@@ -26,6 +29,26 @@ region = Rect2(96, 192, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ea4og"]
 atlas = ExtResource("1_74wug")
 region = Rect2(128, 192, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pfajw"]
+atlas = ExtResource("1_74wug")
+region = Rect2(0, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p0tqj"]
+atlas = ExtResource("1_74wug")
+region = Rect2(32, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cd6y"]
+atlas = ExtResource("1_74wug")
+region = Rect2(64, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_noaae"]
+atlas = ExtResource("1_74wug")
+region = Rect2(96, 128, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wn523"]
+atlas = ExtResource("1_74wug")
+region = Rect2(128, 128, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eg74q"]
 atlas = ExtResource("1_74wug")
@@ -119,6 +142,38 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_pfajw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p0tqj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6cd6y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noaae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noaae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noaae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noaae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_noaae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wn523")
+}],
+"loop": false,
+"name": &"Block",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_eg74q")
 }, {
 "duration": 1.0,
@@ -201,14 +256,28 @@ properties/1/path = NodePath("StateLabel:text")
 properties/1/spawn = true
 properties/1/sync = true
 properties/1/watch = false
+properties/2/path = NodePath("Sprite:animation")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
+properties/3/path = NodePath("Sprite:flip_h")
+properties/3/spawn = true
+properties/3/sync = true
+properties/3/watch = false
 
-[node name="Knight" type="CharacterBody2D"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
+radius = 4.0
+height = 12.0
+
+[node name="Knight" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_k8s4n")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2wkft")
-animation = &"Walk"
+animation = &"Block"
 autoplay = "Idle"
+frame = 8
+frame_progress = 1.0
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 visible = false
@@ -227,6 +296,10 @@ script = ExtResource("4_r1sqb")
 [node name="CharacterMoveState" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("5_occhi")
 
+[node name="KnightR" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("6_0r34o")
+canMove = false
+
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("4_atqvy")]
 offset_left = -17.0
 offset_top = -25.0
@@ -237,3 +310,14 @@ character = NodePath("../CharacterStateMachine")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_boqm3")
+
+[node name="Health Component" parent="." instance=ExtResource("7_7beb4")]
+
+[node name="Hurtbox Component" parent="." instance=ExtResource("8_cc2di")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
+position = Vector2(0, 9)
+shape = SubResource("CapsuleShape2D_25juu")
+debug_color = Color(0.894118, 0, 0.780392, 0.419608)
+
+[connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
