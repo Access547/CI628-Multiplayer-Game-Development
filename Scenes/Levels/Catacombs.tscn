@@ -3122,7 +3122,3 @@ position = Vector2(84, 150)
 
 [node name="1" type="Marker2D" parent="." groups=["PlayerSpawner"]]
 position = Vector2(185, 149)
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/Attacks/test_proj.tscn")
-spawn_path = NodePath("..")

@@ -3,8 +3,8 @@ class_name HealthComponent
 
 
 var health: int
-var immune: bool
 
+@export var immune: bool
 @export var maxHealth: int
 
 func _ready():
@@ -15,3 +15,5 @@ func TakeDamage(value):
 	if immune:
 		value = 0
 	health -= value
+
+	print(str(health))

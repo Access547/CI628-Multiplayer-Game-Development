@@ -1,20 +1,26 @@
 extends Area2D
 
+var direction: Vector2
+
+@export var projSpeed: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	direction = Vector2(1,0).rotated(rotation)
 
 
 func _physics_process(delta):
-	global_position.x += 1
+	global_position += direction.normalized() * projSpeed
+
 
 
 func _on_timer_timeout():
-	#queue_free()
-	pass
+	queue_free()
 
 
-func _on_body_entered(body):
-	if body.is_in_group("Player"):
+func _on_area_entered(area):
+	if area.is_in_group("Player"):
+		
+		area.Damage(2)
+		
 		queue_free()

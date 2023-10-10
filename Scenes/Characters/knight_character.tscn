@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cbyvj756fyetn"]
+[gd_scene load_steps=52 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
 [ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
@@ -8,7 +8,10 @@
 [ext_resource type="Script" path="res://Scripts/States/CharacterMoveState.gd" id="5_occhi"]
 [ext_resource type="Script" path="res://Scripts/States/KnightR.gd" id="6_0r34o"]
 [ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="7_7beb4"]
+[ext_resource type="Script" path="res://Scripts/States/KnightL.gd" id="7_gyndt"]
 [ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="8_cc2di"]
+[ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="10_y57jf"]
+[ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="11_gmri2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i7k61"]
 atlas = ExtResource("1_74wug")
@@ -252,22 +255,96 @@ properties/0/path = NodePath(".:position")
 properties/0/spawn = true
 properties/0/sync = true
 properties/0/watch = false
-properties/1/path = NodePath("StateLabel:text")
+properties/1/path = NodePath("Sprite:animation")
 properties/1/spawn = true
 properties/1/sync = true
 properties/1/watch = false
-properties/2/path = NodePath("Sprite:animation")
+properties/2/path = NodePath("Sprite:flip_h")
 properties/2/spawn = true
 properties/2/sync = true
 properties/2/watch = false
-properties/3/path = NodePath("Sprite:flip_h")
+properties/3/path = NodePath("Projectile Rotation:rotation")
 properties/3/spawn = true
 properties/3/sync = true
 properties/3/watch = false
+properties/4/path = NodePath("Health Component:immune")
+properties/4/spawn = true
+properties/4/sync = true
+properties/4/watch = false
+properties/5/path = NodePath("Projectile Rotation/Weapon Slash:visible")
+properties/5/spawn = true
+properties/5/sync = true
+properties/5/watch = false
+properties/6/path = NodePath("Projectile Rotation/Weapon Slash:animation")
+properties/6/spawn = true
+properties/6/sync = true
+properties/6/watch = false
+properties/7/path = NodePath("Projectile Rotation/Weapon Slash:frame")
+properties/7/spawn = true
+properties/7/sync = true
+properties/7/watch = false
+properties/8/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D:disabled")
+properties/8/spawn = true
+properties/8/sync = true
+properties/8/watch = false
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
 radius = 4.0
 height = 12.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1iqvi"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(0, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxpkg"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(32, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eqaup"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(64, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7xxb"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(96, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_acei4"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(128, 0, 32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_issgv"]
+atlas = ExtResource("10_y57jf")
+region = Rect2(160, 0, 32, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l0wbc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1iqvi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jxpkg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eqaup")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m7xxb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_acei4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_issgv")
+}],
+"loop": false,
+"name": &"default",
+"speed": 20.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v5q25"]
+radius = 7.26374
+height = 28.5272
 
 [node name="Knight" type="CharacterBody2D" groups=["Player"]]
 script = ExtResource("1_k8s4n")
@@ -296,11 +373,18 @@ script = ExtResource("4_r1sqb")
 [node name="CharacterMoveState" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("5_occhi")
 
-[node name="KnightR" type="Node" parent="CharacterStateMachine"]
+[node name="KnightR" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
 script = ExtResource("6_0r34o")
+healthComponent = NodePath("../../Health Component")
+canMove = false
+
+[node name="KnightL" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
+script = ExtResource("7_gyndt")
+weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 canMove = false
 
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("4_atqvy")]
+visible = false
 offset_left = -17.0
 offset_top = -25.0
 offset_right = 86.0
@@ -312,12 +396,38 @@ character = NodePath("../CharacterStateMachine")
 replication_config = SubResource("SceneReplicationConfig_boqm3")
 
 [node name="Health Component" parent="." instance=ExtResource("7_7beb4")]
+maxHealth = 10
 
-[node name="Hurtbox Component" parent="." instance=ExtResource("8_cc2di")]
+[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
+healthComponent = NodePath("../Health Component")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
 position = Vector2(0, 9)
 shape = SubResource("CapsuleShape2D_25juu")
 debug_color = Color(0.894118, 0, 0.780392, 0.419608)
 
+[node name="Projectile Rotation" type="Marker2D" parent="."]
+position = Vector2(0, 9)
+
+[node name="Weapon Slash" type="AnimatedSprite2D" parent="Projectile Rotation"]
+position = Vector2(11, 0)
+rotation = -0.895698
+sprite_frames = SubResource("SpriteFrames_l0wbc")
+autoplay = "default"
+frame = 2
+
+[node name="Area2D" type="Area2D" parent="Projectile Rotation/Weapon Slash"]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("11_gmri2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Projectile Rotation/Weapon Slash/Area2D"]
+position = Vector2(-0.936317, 2.03059)
+rotation = 1.24107
+scale = Vector2(1, 1)
+shape = SubResource("CapsuleShape2D_v5q25")
+disabled = true
+
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
+[connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]
+[connection signal="area_entered" from="Projectile Rotation/Weapon Slash/Area2D" to="." method="_on_area_2d_area_entered"]

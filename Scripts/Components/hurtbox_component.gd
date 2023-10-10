@@ -7,3 +7,4 @@ class_name HurtboxComponent
 func Damage(value):
 	if healthComponent:
 		healthComponent.TakeDamage(value)
+

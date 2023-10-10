@@ -4,6 +4,8 @@ extends CharacterBody2D
 @onready var multiplayer_synchronizer = $MultiplayerSynchronizer
 @onready var sprite = $Sprite
 @onready var proj = preload("res://Scenes/Attacks/test_proj.tscn")
+@onready var projectile_rotation = $"Projectile Rotation"
+@onready var weapon_slash = $"Projectile Rotation/Weapon Slash"
 
 
 var SPEED = 100
@@ -37,23 +39,41 @@ func _physics_process(delta):
 			velocity.y = move_toward(velocity.y, 0, SPEED)
 
 		move_and_slide()
+		
+		projectile_rotation.look_at(get_viewport().get_mouse_position())
 
 func _process(delta):
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		if Input.is_action_just_pressed("AbilityL"):
-			spawnProj.rpc()
+			stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightL")
+
 		if Input.is_action_just_pressed("AbilityR"):
 			stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightR")
 
-@rpc("any_peer", "call_local")
-func spawnProj():
-	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
-		var projectile = proj.instantiate()
-		projectile.position = get_local_mouse_position()
-		get_parent().add_child(projectile, true)
+
+@rpc("any_peer","call_local")
+func fire():
+	
+	var projectile = proj.instantiate()
+	projectile.position = global_position
+	projectile.rotation_degrees = projectile_rotation.rotation_degrees
+	get_tree().root.add_child(projectile, true)
 
 
 
 func _on_sprite_animation_finished():
 	if sprite.animation == "Block":
 		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
+	if sprite.animation == "Attack":
+		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
+
+
+
+func _on_weapon_slash_animation_finished():
+	weapon_slash.visible = false
+
+
+func _on_area_2d_area_entered(area):
+	if area.is_in_group("Player"):
+		area.Damage(2)
+
