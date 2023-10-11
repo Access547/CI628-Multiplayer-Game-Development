@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://duv3p0mcwkvq3"]
+[gd_scene load_steps=4 format=3 uid="uid://duv3p0mcwkvq3"]
 
 [ext_resource type="Script" path="res://Scripts/UI/multiplayer controller.gd" id="1_6ur1b"]
 [ext_resource type="Texture2D" uid="uid://be1u5jsbitfqp" path="res://Assets/Art/Character/Portraits/Shield Sprite.png" id="2_6iev8"]
+[ext_resource type="Texture2D" uid="uid://cwve1dwgtw6o8" path="res://Assets/Art/Character/Portraits/golem Sprite.png" id="3_kd2mb"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -55,18 +56,21 @@ offset_bottom = 26.0
 theme_override_font_sizes/font_size = 12
 placeholder_text = "Enter Your Name!"
 
-[node name="ItemList" type="ItemList" parent="."]
-layout_mode = 0
+[node name="OptionButton" type="OptionButton" parent="."]
 offset_left = 1.0
 offset_top = 27.0
-offset_right = 238.0
-offset_bottom = 131.0
-allow_reselect = true
-allow_search = false
-item_count = 1
-item_0/text = "Knight"
-item_0/icon = ExtResource("2_6iev8")
+offset_right = 159.0
+offset_bottom = 58.0
+item_count = 2
+selected = 0
+popup/item_0/text = "Knight"
+popup/item_0/icon = ExtResource("2_6iev8")
+popup/item_0/id = 0
+popup/item_1/text = "Golem"
+popup/item_1/icon = ExtResource("3_kd2mb")
+popup/item_1/id = 1
 
 [connection signal="pressed" from="Host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="Join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="Start Game" to="." method="_on_start_game_pressed"]
+[connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]

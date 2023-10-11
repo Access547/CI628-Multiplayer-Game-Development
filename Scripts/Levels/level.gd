@@ -1,12 +1,13 @@
 extends Node2D
 
-var characterScene = preload("res://Scenes/Characters/knight_character.tscn")
-
+var characterArray = [preload("res://Scenes/Characters/knight_character.tscn"), preload("res://Scenes/Characters/golem_character.tscn")]
+var characterScene
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var index = 0
 	for i in GameManager.players:
+		characterScene = characterArray[GameManager.players[i].class]
 		var currentPlayer = characterScene.instantiate()
 		currentPlayer.name = str(GameManager.players[i].id)
 		currentPlayer.SetUpPlayer(GameManager.players[i].displayName)

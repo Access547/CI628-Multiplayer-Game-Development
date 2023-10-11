@@ -6,6 +6,7 @@ extends Control
 @onready var displayName = $Name
 
 var peer
+var classSelected = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,7 +35,7 @@ func PlayerDisconnected(id):
 #Called only from clients
 func ConnectedToServer():
 	print("Connected to Server!")
-	SendPlayerInformation.rpc_id(1, displayName.text, multiplayer.get_unique_id())
+	SendPlayerInformation.rpc_id(1, displayName.text, multiplayer.get_unique_id(), classSelected)
 
 #Called only from clients
 func ConnectionFailed():
@@ -42,18 +43,19 @@ func ConnectionFailed():
 
 
 @rpc("any_peer")
-func SendPlayerInformation(name, id):
+func SendPlayerInformation(name, id, classSelected):
 	
 	if !GameManager.players.has(id):
 		GameManager.players[id] = {
 			"name": name,
 			"id": id,
-			"displayName": displayName.text
+			"displayName": displayName.text,
+			"class": classSelected
 		}
 		
 	if multiplayer.is_server():
 		for i in GameManager.players:
-			SendPlayerInformation.rpc(GameManager.players[i], i)
+			SendPlayerInformation.rpc(GameManager.players[i], i, GameManager.players[i].class)
 
 
 func HostGame():
@@ -78,7 +80,7 @@ func StartGame():
 
 func _on_host_pressed():
 	HostGame()
-	SendPlayerInformation(displayName.text, multiplayer.get_unique_id())
+	SendPlayerInformation(displayName.text, multiplayer.get_unique_id(), classSelected)
 
 	
 func _on_join_pressed():
@@ -94,3 +96,8 @@ func _on_join_pressed():
 
 func _on_start_game_pressed():
 	StartGame.rpc()
+
+
+
+func _on_option_button_item_selected(index):
+	classSelected = $OptionButton.selected
