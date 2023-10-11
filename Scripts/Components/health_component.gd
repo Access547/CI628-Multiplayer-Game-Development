@@ -17,3 +17,8 @@ func TakeDamage(value):
 	health -= value
 
 	print(str(health))
+
+
+func _process(delta):
+	if health > maxHealth:
+		health = maxHealth

@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3 uid="uid://cbyvj756fyetn"]
+[gd_scene load_steps=54 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
 [ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
@@ -9,7 +9,9 @@
 [ext_resource type="Script" path="res://Scripts/States/KnightR.gd" id="6_0r34o"]
 [ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="7_7beb4"]
 [ext_resource type="Script" path="res://Scripts/States/KnightL.gd" id="7_gyndt"]
+[ext_resource type="Script" path="res://Scripts/States/KnightSpace.gd" id="8_7kkyu"]
 [ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="8_cc2di"]
+[ext_resource type="Script" path="res://Scripts/States/KnightE.gd" id="9_tjg3w"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="10_y57jf"]
 [ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="11_gmri2"]
 
@@ -141,7 +143,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"Attack",
-"speed": 6.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -195,6 +197,18 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0ni2n")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hxlb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p1kkp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hxlb2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p1kkp")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hxlb2")
@@ -287,6 +301,10 @@ properties/8/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionS
 properties/8/spawn = true
 properties/8/sync = true
 properties/8/watch = false
+properties/9/path = NodePath("Camera2D:position")
+properties/9/spawn = true
+properties/9/sync = true
+properties/9/watch = false
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
 radius = 4.0
@@ -351,9 +369,9 @@ script = ExtResource("1_k8s4n")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2wkft")
-animation = &"Block"
+animation = &"Hurt"
 autoplay = "Idle"
-frame = 8
+frame = 6
 frame_progress = 1.0
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
@@ -382,10 +400,21 @@ canMove = false
 script = ExtResource("7_gyndt")
 weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 canMove = false
+canAttack = false
+
+[node name="KnightSpace" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("8_7kkyu")
+dashSpeed = 1000.0
+canAttack = false
+
+[node name="KnightE" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
+script = ExtResource("9_tjg3w")
+healthComponent = NodePath("../../Health Component")
+canMove = false
+canAttack = false
 
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("4_atqvy")]
-visible = false
-offset_left = -17.0
+offset_left = -69.0
 offset_top = -25.0
 offset_right = 86.0
 offset_bottom = 1.0
@@ -424,9 +453,10 @@ script = ExtResource("11_gmri2")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Projectile Rotation/Weapon Slash/Area2D"]
 position = Vector2(-0.936317, 2.03059)
 rotation = 1.24107
-scale = Vector2(1, 1)
 shape = SubResource("CapsuleShape2D_v5q25")
 disabled = true
+
+[node name="Camera2D" type="Camera2D" parent="."]
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]

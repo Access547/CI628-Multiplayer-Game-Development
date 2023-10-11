@@ -6,6 +6,7 @@ extends CharacterBody2D
 @onready var proj = preload("res://Scenes/Attacks/test_proj.tscn")
 @onready var projectile_rotation = $"Projectile Rotation"
 @onready var weapon_slash = $"Projectile Rotation/Weapon Slash"
+@onready var camera = $Camera2D
 
 
 var SPEED = 100
@@ -18,6 +19,8 @@ func _ready():
 	else:
 		multiplayer_synchronizer.set_multiplayer_authority(str(name).to_int())
 	
+	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
+		camera.make_current()
 	
 
 func _physics_process(delta):
@@ -44,11 +47,17 @@ func _physics_process(delta):
 
 func _process(delta):
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
-		if Input.is_action_just_pressed("AbilityL"):
-			stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightL")
+		if stateMachine.currentState.canAttack:
+			if Input.is_action_just_pressed("AbilityL"):
+				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightL")
 
-		if Input.is_action_just_pressed("AbilityR"):
-			stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightR")
+			if Input.is_action_just_pressed("AbilityR"):
+				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightR")
+				
+			if Input.is_action_just_pressed("AbilitySpace"):
+				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightSpace")
+			if Input.is_action_just_pressed("AbilityE"):
+				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "KnightE")
 
 
 @rpc("any_peer","call_local")
@@ -66,6 +75,8 @@ func _on_sprite_animation_finished():
 		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
 	if sprite.animation == "Attack":
 		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
+	if sprite.animation == "Hurt":
+		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
 
 
 
@@ -75,5 +86,6 @@ func _on_weapon_slash_animation_finished():
 
 func _on_area_2d_area_entered(area):
 	if area.is_in_group("Player"):
-		area.Damage(2)
+		if area != self.get_node("Hurtbox Component"):
+			area.Damage(2)
 

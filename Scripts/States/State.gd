@@ -7,6 +7,7 @@ var character: CharacterBody2D
 var sprite: AnimatedSprite2D
 
 @export var canMove: bool = true
+@export var canAttack: bool = true
 
 signal transitioned
 
