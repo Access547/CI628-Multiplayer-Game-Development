@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://cbyvj756fyetn"]
+[gd_scene load_steps=60 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
 [ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
@@ -14,8 +14,10 @@
 [ext_resource type="Script" path="res://Scripts/States/Knight Abilities/KnightE.gd" id="9_w66s7"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterRespawningState.gd" id="10_oc4jk"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="10_y57jf"]
+[ext_resource type="Script" path="res://Scripts/States/CharacterStunnedState.gd" id="11_8hj44"]
 [ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="11_gmri2"]
 [ext_resource type="PackedScene" uid="uid://56mf3cu3a73i" path="res://Scenes/UI/respawning.tscn" id="15_pnk6o"]
+[ext_resource type="Script" path="res://Scripts/Components/stun_component.gd" id="17_4sl1k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i7k61"]
 atlas = ExtResource("1_74wug")
@@ -441,8 +443,14 @@ healthComponent = NodePath("../../Health Component")
 canMove = false
 canAttack = false
 
+[node name="CharacterStunnedState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("stunComponent")]
+script = ExtResource("11_8hj44")
+stunComponent = NodePath("../../StunComponent")
+canMove = false
+canAttack = false
+canBeStunned = false
+
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("4_atqvy")]
-visible = false
 offset_left = -69.0
 offset_top = -25.0
 offset_right = 86.0
@@ -457,9 +465,10 @@ replication_config = SubResource("SceneReplicationConfig_boqm3")
 maxHealth = 10
 stateMachine = NodePath("../CharacterStateMachine")
 
-[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
+[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent", "stunComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
 visible = false
 healthComponent = NodePath("../Health Component")
+stunComponent = NodePath("../StunComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
 position = Vector2(0, 9)
@@ -502,12 +511,16 @@ color = Color(0.921569, 0.627451, 0.231373, 1)
 texture = SubResource("GradientTexture2D_vgn71")
 
 [node name="Display Name Label" type="Label" parent="."]
+visible = false
 offset_left = -13.0
 offset_top = -10.0
 offset_right = 36.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 8
 text = "player"
+
+[node name="StunComponent" type="Node" parent="."]
+script = ExtResource("17_4sl1k")
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]

@@ -1,17 +1,23 @@
-[gd_scene load_steps=58 format=3 uid="uid://s1djxy0818iw"]
+[gd_scene load_steps=64 format=3 uid="uid://s1djxy0818iw"]
 
-[ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_y7mrt"]
+[ext_resource type="Script" path="res://Scripts/Character/golem_character.gd" id="1_1ow1w"]
 [ext_resource type="Texture2D" uid="uid://c67ms54p22bcv" path="res://Assets/Art/Character/minifolks by LYSeeK/Golems/Outline/MiniOvergrownGolem.png" id="2_pgwdh"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterStateMachine.gd" id="3_j42ua"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterIdleState.gd" id="4_m4l62"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterMoveState.gd" id="5_72jmr"]
+[ext_resource type="Script" path="res://Scripts/States/CharacterStunnedState.gd" id="7_map0i"]
+[ext_resource type="Script" path="res://Scripts/States/Golem Abilities/GolemE.gd" id="8_ut7e2"]
+[ext_resource type="Script" path="res://Scripts/States/Golem Abilities/GolemL.gd" id="9_3oqcu"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterRespawningState.gd" id="10_byx45"]
+[ext_resource type="Script" path="res://Scripts/States/Golem Abilities/GolemR.gd" id="10_phvyg"]
+[ext_resource type="Script" path="res://Scripts/States/Golem Abilities/GolemSpace.gd" id="11_0u3me"]
 [ext_resource type="PackedScene" uid="uid://vi6oha8iu5ft" path="res://Scenes/DebugTools/StateLabel.tscn" id="11_s8xxs"]
 [ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="12_5yetq"]
 [ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="13_ra0vb"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="14_dy1p6"]
 [ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="15_hrshk"]
 [ext_resource type="PackedScene" uid="uid://56mf3cu3a73i" path="res://Scenes/UI/respawning.tscn" id="16_k8tee"]
+[ext_resource type="Script" path="res://Scripts/Components/stun_component.gd" id="18_ebue8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4x4hu"]
 atlas = ExtResource("2_pgwdh")
@@ -147,6 +153,12 @@ animations = [{
 "texture": SubResource("AtlasTexture_msqj0")
 }, {
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_msqj0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_msqj0")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_ryy1r")
 }, {
 "duration": 1.0,
@@ -157,7 +169,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"Attack",
-"speed": 10.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -385,14 +397,17 @@ height = 128
 fill = 1
 fill_from = Vector2(0.491071, 0.5)
 
-[node name="Golem" type="CharacterBody2D" groups=["Player"]]
+[node name="Golem" type="CharacterBody2D" node_paths=PackedStringArray("stunComponent") groups=["Player"]]
 collision_mask = 2
-script = ExtResource("1_y7mrt")
+script = ExtResource("1_1ow1w")
+stunComponent = NodePath("StunComponent")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2wkft")
-animation = &"Block"
+animation = &"Attack"
 autoplay = "Idle"
+frame = 6
+frame_progress = 1.0
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 visible = false
@@ -417,6 +432,28 @@ healthComponent = NodePath("../../Health Component")
 canMove = false
 canAttack = false
 
+[node name="CharacterStunnedState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("stunComponent")]
+script = ExtResource("7_map0i")
+stunComponent = NodePath("../../StunComponent")
+canMove = false
+canAttack = false
+canBeStunned = false
+
+[node name="GolemE" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("8_ut7e2")
+
+[node name="GolemL" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
+script = ExtResource("9_3oqcu")
+weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
+canMove = false
+canAttack = false
+
+[node name="GolemR" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("10_phvyg")
+
+[node name="GolemSpace" type="Node" parent="CharacterStateMachine"]
+script = ExtResource("11_0u3me")
+
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("11_s8xxs")]
 visible = false
 offset_left = -69.0
@@ -433,9 +470,10 @@ replication_config = SubResource("SceneReplicationConfig_boqm3")
 maxHealth = 10
 stateMachine = NodePath("../CharacterStateMachine")
 
-[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent") groups=["Player"] instance=ExtResource("13_ra0vb")]
+[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent", "stunComponent") groups=["Player"] instance=ExtResource("13_ra0vb")]
 visible = false
 healthComponent = NodePath("../Health Component")
+stunComponent = NodePath("../StunComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
 position = Vector2(0, 9)
@@ -446,11 +484,13 @@ debug_color = Color(0.894118, 0, 0.780392, 0.419608)
 position = Vector2(0, 9)
 
 [node name="Weapon Slash" type="AnimatedSprite2D" parent="Projectile Rotation"]
+visible = false
 position = Vector2(11, 0)
-rotation = -0.895698
+rotation = -1.24442
 sprite_frames = SubResource("SpriteFrames_l0wbc")
 autoplay = "default"
-frame = 2
+frame = 5
+frame_progress = 1.0
 
 [node name="Area2D" type="Area2D" parent="Projectile Rotation/Weapon Slash"]
 visible = false
@@ -478,12 +518,16 @@ color = Color(0.921569, 0.627451, 0.231373, 1)
 texture = SubResource("GradientTexture2D_vgn71")
 
 [node name="Display Name Label" type="Label" parent="."]
+visible = false
 offset_left = -13.0
 offset_top = -10.0
 offset_right = 36.0
 offset_bottom = 16.0
 theme_override_font_sizes/font_size = 8
 text = "player"
+
+[node name="StunComponent" type="Node" parent="."]
+script = ExtResource("18_ebue8")
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]

@@ -57,6 +57,7 @@ theme_override_font_sizes/font_size = 12
 placeholder_text = "Enter Your Name!"
 
 [node name="OptionButton" type="OptionButton" parent="."]
+layout_mode = 0
 offset_left = 1.0
 offset_top = 27.0
 offset_right = 159.0

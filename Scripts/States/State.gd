@@ -9,6 +9,7 @@ var sprite: AnimatedSprite2D
 @export var canMove: bool = true
 @export var canAttack: bool = true
 @export var immune: bool = false
+@export var canBeStunned: bool = true
 
 signal transitioned
 
