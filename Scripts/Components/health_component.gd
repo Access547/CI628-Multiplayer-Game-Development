@@ -6,17 +6,19 @@ var health: int
 
 @export var immune: bool
 @export var maxHealth: int
+@export var stateMachine: StateMachine
 
 func _ready():
 	health = maxHealth
 	
 	
 func TakeDamage(value):
-	if immune:
-		value = 0
-	health -= value
+	if !immune:
+		health -= value
 
-	print(str(health))
+		if health <= 0:
+			if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().multiplayer.get_unique_id():
+				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")
 
 
 func _process(delta):

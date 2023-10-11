@@ -8,6 +8,7 @@ var sprite: AnimatedSprite2D
 
 @export var canMove: bool = true
 @export var canAttack: bool = true
+@export var immune: bool = false
 
 signal transitioned
 

@@ -7,11 +7,11 @@ extends CharacterBody2D
 @onready var projectile_rotation = $"Projectile Rotation"
 @onready var weapon_slash = $"Projectile Rotation/Weapon Slash"
 @onready var camera = $Camera2D
+@onready var display_name_label = $"Display Name Label"
 
 
 var SPEED = 100
-
-
+var spawnPos
 
 func _ready():
 	if name.begins_with("@"):
@@ -21,6 +21,11 @@ func _ready():
 	
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		camera.make_current()
+		spawnPos = position
+		
+	
+func SetUpPlayer(name: String):
+	$"Display Name Label".text = name
 	
 
 func _physics_process(delta):
@@ -30,9 +35,9 @@ func _physics_process(delta):
 			velocity.x = (directionX * SPEED)
 		else:
 			velocity.x = move_toward(velocity.x, 0, SPEED)
-		if directionX == 1:
+		if directionX == 1 and stateMachine.canMoveCheck():
 			sprite.flip_h = false
-		elif directionX == -1:
+		elif directionX == -1 and stateMachine.canMoveCheck():
 			sprite.flip_h = true
 			
 		var directionY = Input.get_axis("Up", "Down")

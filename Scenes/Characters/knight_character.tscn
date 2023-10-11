@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://cbyvj756fyetn"]
+[gd_scene load_steps=58 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
 [ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
@@ -6,14 +6,16 @@
 [ext_resource type="PackedScene" uid="uid://vi6oha8iu5ft" path="res://Scenes/DebugTools/StateLabel.tscn" id="4_atqvy"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterIdleState.gd" id="4_r1sqb"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterMoveState.gd" id="5_occhi"]
-[ext_resource type="Script" path="res://Scripts/States/KnightR.gd" id="6_0r34o"]
+[ext_resource type="Script" path="res://Scripts/States/Knight Abilities/KnightR.gd" id="6_swnxn"]
 [ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="7_7beb4"]
-[ext_resource type="Script" path="res://Scripts/States/KnightL.gd" id="7_gyndt"]
-[ext_resource type="Script" path="res://Scripts/States/KnightSpace.gd" id="8_7kkyu"]
+[ext_resource type="Script" path="res://Scripts/States/Knight Abilities/KnightL.gd" id="7_ydqlp"]
+[ext_resource type="Script" path="res://Scripts/States/Knight Abilities/KnightSpace.gd" id="8_amcu6"]
 [ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="8_cc2di"]
-[ext_resource type="Script" path="res://Scripts/States/KnightE.gd" id="9_tjg3w"]
+[ext_resource type="Script" path="res://Scripts/States/Knight Abilities/KnightE.gd" id="9_w66s7"]
+[ext_resource type="Script" path="res://Scripts/States/CharacterRespawningState.gd" id="10_oc4jk"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="10_y57jf"]
 [ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="11_gmri2"]
+[ext_resource type="PackedScene" uid="uid://56mf3cu3a73i" path="res://Scenes/UI/respawning.tscn" id="15_pnk6o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i7k61"]
 atlas = ExtResource("1_74wug")
@@ -305,6 +307,14 @@ properties/9/path = NodePath("Camera2D:position")
 properties/9/spawn = true
 properties/9/sync = true
 properties/9/watch = false
+properties/10/path = NodePath("Sprite:frame")
+properties/10/spawn = true
+properties/10/sync = true
+properties/10/watch = false
+properties/11/path = NodePath("Display Name Label:text")
+properties/11/spawn = true
+properties/11/sync = true
+properties/11/watch = false
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
 radius = 4.0
@@ -364,7 +374,19 @@ animations = [{
 radius = 7.26374
 height = 28.5272
 
+[sub_resource type="Gradient" id="Gradient_nc4ts"]
+offsets = PackedFloat32Array(0.0869565, 0.664596)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vgn71"]
+gradient = SubResource("Gradient_nc4ts")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.491071, 0.5)
+
 [node name="Knight" type="CharacterBody2D" groups=["Player"]]
+collision_mask = 2
 script = ExtResource("1_k8s4n")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
@@ -392,28 +414,35 @@ script = ExtResource("4_r1sqb")
 script = ExtResource("5_occhi")
 
 [node name="KnightR" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
-script = ExtResource("6_0r34o")
+script = ExtResource("6_swnxn")
 healthComponent = NodePath("../../Health Component")
 canMove = false
 
 [node name="KnightL" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
-script = ExtResource("7_gyndt")
+script = ExtResource("7_ydqlp")
 weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 canMove = false
 canAttack = false
 
 [node name="KnightSpace" type="Node" parent="CharacterStateMachine"]
-script = ExtResource("8_7kkyu")
+script = ExtResource("8_amcu6")
 dashSpeed = 1000.0
 canAttack = false
 
 [node name="KnightE" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
-script = ExtResource("9_tjg3w")
+script = ExtResource("9_w66s7")
+healthComponent = NodePath("../../Health Component")
+canMove = false
+canAttack = false
+
+[node name="CharacterRespawningState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
+script = ExtResource("10_oc4jk")
 healthComponent = NodePath("../../Health Component")
 canMove = false
 canAttack = false
 
 [node name="StateLabel" parent="." node_paths=PackedStringArray("character") instance=ExtResource("4_atqvy")]
+visible = false
 offset_left = -69.0
 offset_top = -25.0
 offset_right = 86.0
@@ -424,10 +453,12 @@ character = NodePath("../CharacterStateMachine")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_boqm3")
 
-[node name="Health Component" parent="." instance=ExtResource("7_7beb4")]
+[node name="Health Component" parent="." node_paths=PackedStringArray("stateMachine") instance=ExtResource("7_7beb4")]
 maxHealth = 10
+stateMachine = NodePath("../CharacterStateMachine")
 
 [node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
+visible = false
 healthComponent = NodePath("../Health Component")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
@@ -446,6 +477,7 @@ autoplay = "default"
 frame = 2
 
 [node name="Area2D" type="Area2D" parent="Projectile Rotation/Weapon Slash"]
+visible = false
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("11_gmri2")
@@ -457,6 +489,25 @@ shape = SubResource("CapsuleShape2D_v5q25")
 disabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Respawning" parent="CanvasLayer" node_paths=PackedStringArray("stateMachine") instance=ExtResource("15_pnk6o")]
+visible = false
+stateMachine = NodePath("../../CharacterStateMachine")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, 9)
+color = Color(0.921569, 0.627451, 0.231373, 1)
+texture = SubResource("GradientTexture2D_vgn71")
+
+[node name="Display Name Label" type="Label" parent="."]
+offset_left = -13.0
+offset_top = -10.0
+offset_right = 36.0
+offset_bottom = 16.0
+theme_override_font_sizes/font_size = 8
+text = "player"
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]

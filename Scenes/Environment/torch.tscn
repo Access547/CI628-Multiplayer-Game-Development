@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://b04cvbofc3f4m"]
+
+[ext_resource type="Texture2D" uid="uid://nxydfxog4nqt" path="res://Assets/Art/Environment/Torch.png" id="1_g43vb"]
+
+[sub_resource type="Gradient" id="Gradient_xfohc"]
+offsets = PackedFloat32Array(0.0869565, 0.664596)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s1k0g"]
+gradient = SubResource("Gradient_xfohc")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.491071, 0.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ohq6e"]
+size = Vector2(8, 15.5)
+
+[node name="Torch" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_g43vb")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -12)
+color = Color(0.921569, 0.627451, 0.231373, 1)
+texture = SubResource("GradientTexture2D_s1k0g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 7.75)
+shape = SubResource("RectangleShape2D_ohq6e")
