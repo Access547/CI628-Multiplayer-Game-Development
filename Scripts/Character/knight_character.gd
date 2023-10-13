@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-@onready var stateMachine = $CharacterStateMachine
+@export var stateMachine: StateMachine
+
+
 @onready var multiplayer_synchronizer = $MultiplayerSynchronizer
 @onready var sprite = $Sprite
 @onready var proj = preload("res://Scenes/Attacks/test_proj.tscn")

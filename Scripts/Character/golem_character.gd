@@ -1,20 +1,25 @@
 extends CharacterBody2D
 
-@onready var stateMachine = $CharacterStateMachine
+@export var stateMachine: StateMachine
+
+
 @onready var multiplayer_synchronizer = $MultiplayerSynchronizer
 @onready var sprite = $Sprite
 @onready var proj = preload("res://Scenes/Attacks/test_proj.tscn")
 @onready var projectile_rotation = $"Projectile Rotation"
-@onready var weapon_slash = $"Projectile Rotation/Weapon Slash"
+@onready var weapon_slashL = $"Projectile Rotation/GolemLAttack"
+@onready var weapon_slashR = $"Projectile Rotation/GolemRAttack"
+
 @onready var camera = $Camera2D
 @onready var display_name_label = $"Display Name Label"
 
 @export var stunComponent: StunComponent
-
+@export var hurtBoxComponent: HurtboxComponent
 
 
 var SPEED = 100
 var spawnPos
+var damage: int
 
 func _ready():
 	if name.begins_with("@"):
@@ -58,10 +63,9 @@ func _process(delta):
 		if stateMachine.currentState.canAttack:
 			if Input.is_action_just_pressed("AbilityL"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "GolemL")
-
+				
 			if Input.is_action_just_pressed("AbilityR"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "GolemR")
-				
 			if Input.is_action_just_pressed("AbilitySpace"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "GolemSpace")
 			if Input.is_action_just_pressed("AbilityE"):
@@ -87,15 +91,23 @@ func _on_sprite_animation_finished():
 		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
 
 
-
 func _on_weapon_slash_animation_finished():
-	weapon_slash.visible = false
+	$"Projectile Rotation/GolemLAttack".visible = false
+
+func _on_weapon_slash_R_animation_finished():
+	$"Projectile Rotation/GolemRAttack".visible = false
 
 #Weapon slash area
 func _on_area_2d_area_entered(area):
 	if area.is_in_group("Player"):
 		if area != self.get_node("Hurtbox Component"):
-			area.Damage(2)
-			if stunComponent.canBeStunned:
+				area.Damage(2)
 				area.Stun(60)
+
+
+func _on_golemR_attack_area_entered(area):
+		if area.is_in_group("Player"):
+			if area != self.get_node("Hurtbox Component"):
+				area.Damage(10)
+
 

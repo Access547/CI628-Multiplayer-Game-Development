@@ -2,7 +2,7 @@ extends Node
 class_name HealthComponent
 
 
-var health: int
+@export var health: int
 
 @export var immune: bool
 @export var maxHealth: int
@@ -15,9 +15,9 @@ func _ready():
 func TakeDamage(value):
 	if !immune:
 		health -= value
-
 		if health <= 0:
 			if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().multiplayer.get_unique_id():
+				print("hello")
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")
 
 

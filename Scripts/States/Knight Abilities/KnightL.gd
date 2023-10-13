@@ -1,7 +1,7 @@
 extends State
 class_name KnightL
 
-
+@export var multiplayer_synchronizer: MultiplayerSynchronizer
 @export var weapon_slash: AnimatedSprite2D
 @onready var collision_shape_2d = $"../../Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D"
 
@@ -17,3 +17,6 @@ func Enter():
 
 func Exit():
 	collision_shape_2d.disabled = true
+
+
+

@@ -1,15 +1,23 @@
 extends State
 class_name GolemL
 
+
+@export var hurtBoxComponent: HurtboxComponent
 @export var weapon_slash: AnimatedSprite2D
-@onready var collision_shape_2d = $"../../Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D"
+@export var collision_shape_2d: CollisionShape2D
 
 func Enter():
-	weapon_slash.visible = true
-	weapon_slash.play("default")
 	sprite.play("Attack")
-	collision_shape_2d.disabled = false
+	character.damage = 2
+
+func Update(delta):
+	if sprite.frame == 4:
+		collision_shape_2d.disabled = false
+		weapon_slash.visible = true
+		weapon_slash.play("default")
 
 
 func Exit():
 	collision_shape_2d.disabled = true
+
+

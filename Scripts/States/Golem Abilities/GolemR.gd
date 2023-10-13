@@ -1,11 +1,26 @@
 extends State
 class_name GolemR
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+@export var hurtBoxComponent: HurtboxComponent
+@export var weapon_slash: AnimatedSprite2D
+@export var collision_shape_2d: CollisionShape2D
+
+func Enter():
+	sprite.play("Block")
+	hurtBoxComponent.attackType = "GolemR"
+	
+
+func Update(delta):
+	if sprite.frame == 4:
+		collision_shape_2d.disabled = false
+		weapon_slash.visible = true
+		weapon_slash.play("default")
 
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func Attack(area):
+	area.Damage(10)
+	
+
+
+func Exit():
+	collision_shape_2d.disabled = true

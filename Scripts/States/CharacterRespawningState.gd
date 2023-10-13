@@ -7,6 +7,7 @@ class_name CharacterRespawningState
 @export var healthComponent: HealthComponent
 
 func Enter():
+	print("ded")
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
 		respawning.visible = true
 		respawning.timer.start()
