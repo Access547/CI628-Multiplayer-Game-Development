@@ -19,7 +19,6 @@ func Enter():
 
 func Respawn():
 	transitioned.emit(self, "CharacterIdleState")
-	print("dwa")
 
 func Exit():
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():

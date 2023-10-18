@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://b5v0euhixnaa1" path="res://Scenes/Components/health_component.tscn" id="12_5yetq"]
 [ext_resource type="PackedScene" uid="uid://ds0gmpcaf3o4c" path="res://Scenes/Components/hurtbox_component.tscn" id="13_ra0vb"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="14_dy1p6"]
-[ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="15_hrshk"]
 [ext_resource type="PackedScene" uid="uid://56mf3cu3a73i" path="res://Scenes/UI/respawning.tscn" id="16_k8tee"]
 [ext_resource type="PackedScene" uid="uid://cx4bi7d1ujbn5" path="res://Scenes/UI/progress_bar.tscn" id="18_ccjut"]
 [ext_resource type="Script" path="res://Scripts/Components/stun_component.gd" id="18_ebue8"]
@@ -180,6 +179,15 @@ animations = [{
 "texture": SubResource("AtlasTexture_3ici1")
 }, {
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_3ici1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ici1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ici1")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_edeh3")
 }, {
 "duration": 1.0,
@@ -300,46 +308,50 @@ properties/3/path = NodePath("Projectile Rotation:rotation")
 properties/3/spawn = true
 properties/3/sync = true
 properties/3/watch = false
-properties/4/path = NodePath("Health Component:immune")
+properties/4/path = NodePath("Projectile Rotation/Weapon Slash:visible")
 properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
-properties/5/path = NodePath("Projectile Rotation/Weapon Slash:visible")
+properties/5/path = NodePath("Projectile Rotation/Weapon Slash:animation")
 properties/5/spawn = true
 properties/5/sync = true
 properties/5/watch = false
-properties/6/path = NodePath("Projectile Rotation/Weapon Slash:animation")
+properties/6/path = NodePath("Projectile Rotation/Weapon Slash:frame")
 properties/6/spawn = true
 properties/6/sync = true
 properties/6/watch = false
-properties/7/path = NodePath("Projectile Rotation/Weapon Slash:frame")
+properties/7/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D:disabled")
 properties/7/spawn = true
 properties/7/sync = true
 properties/7/watch = false
-properties/8/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D:disabled")
+properties/8/path = NodePath("Camera2D:position")
 properties/8/spawn = true
 properties/8/sync = true
 properties/8/watch = false
-properties/9/path = NodePath("Camera2D:position")
+properties/9/path = NodePath("Sprite:frame")
 properties/9/spawn = true
 properties/9/sync = true
 properties/9/watch = false
-properties/10/path = NodePath("Sprite:frame")
+properties/10/path = NodePath("Display Name Label:text")
 properties/10/spawn = true
 properties/10/sync = true
 properties/10/watch = false
-properties/11/path = NodePath("Display Name Label:text")
+properties/11/path = NodePath("ProgressBar:value")
 properties/11/spawn = true
 properties/11/sync = true
 properties/11/watch = false
-properties/12/path = NodePath("ProgressBar:value")
+properties/12/path = NodePath("ProgressBar:visible")
 properties/12/spawn = true
 properties/12/sync = true
 properties/12/watch = false
-properties/13/path = NodePath("ProgressBar:visible")
+properties/13/path = NodePath("Health Component:health")
 properties/13/spawn = true
 properties/13/sync = true
 properties/13/watch = false
+properties/14/path = NodePath("GolemRHitbox/CollisionShape2D:disabled")
+properties/14/spawn = true
+properties/14/sync = true
+properties/14/watch = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1iqvi"]
 atlas = ExtResource("14_dy1p6")
@@ -395,6 +407,9 @@ animations = [{
 radius = 7.26374
 height = 28.5272
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k2p5o"]
+height = 40.0
+
 [sub_resource type="Gradient" id="Gradient_nc4ts"]
 offsets = PackedFloat32Array(0.0869565, 0.664596)
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
@@ -416,10 +431,8 @@ healthComponent = NodePath("Health Component")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2wkft")
-animation = &"Attack"
+animation = &"Block"
 autoplay = "Idle"
-frame = 6
-frame_progress = 1.0
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 visible = false
@@ -480,8 +493,9 @@ weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 canMove = false
 canAttack = false
 
-[node name="R" type="Node" parent="CharacterStateMachine"]
+[node name="R" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
 script = ExtResource("10_phvyg")
+weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 
 [node name="Space" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("11_0u3me")
@@ -513,12 +527,24 @@ frame_progress = 1.0
 visible = false
 collision_layer = 2
 collision_mask = 2
-script = ExtResource("15_hrshk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Projectile Rotation/Weapon Slash/Area2D"]
+visible = false
 position = Vector2(-0.936317, 2.03059)
 rotation = 1.24107
 shape = SubResource("CapsuleShape2D_v5q25")
+disabled = true
+
+[node name="GolemRHitbox" type="Area2D" parent="."]
+visible = false
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GolemRHitbox"]
+visible = false
+position = Vector2(0, 14)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_k2p5o")
 disabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -553,3 +579,4 @@ stateMachine = NodePath("../../CharacterStateMachine")
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]
 [connection signal="area_entered" from="Projectile Rotation/Weapon Slash/Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_entered" from="GolemRHitbox" to="." method="_on_golem_r_hitbox_area_entered"]

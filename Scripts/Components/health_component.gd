@@ -15,7 +15,6 @@ func _ready():
 	
 func TakeDamage(value):
 	health -= value
-	print(str(self, health))
 		
 
 

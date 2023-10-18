@@ -1,6 +1,7 @@
 extends PC
 
 
+
 func _on_sprite_animation_finished():
 	if sprite.animation == "Block":
 		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
@@ -20,5 +21,13 @@ func _on_area_2d_area_entered(area):
 		if area != self.get_node("Hurtbox Component"):
 			area.Damage(2)
 			if stunComponent.canBeStunned:
-				area.Stun(60)
+				area.Stun(120)
 
+
+
+
+func _on_golem_r_hitbox_area_entered(area):
+		if area.is_in_group("Player"):
+			if area != self.get_node("Hurtbox Component"):
+				print("dwa2")
+				area.Damage(5)

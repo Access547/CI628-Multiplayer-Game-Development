@@ -1,11 +1,18 @@
 extends State
 class_name GolemR
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+@export var weapon_slash: AnimatedSprite2D
+@onready var collision_shape_2d = $"../../GolemRHitbox/CollisionShape2D"
 
+func Enter():
+	sprite.play("Block")
+	
+func Update(delta):
+	if sprite.frame == 4:
+		weapon_slash.visible = true
+		weapon_slash.play("default")
+		collision_shape_2d.disabled = false
+		
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func Exit():
+	collision_shape_2d.disabled = true
