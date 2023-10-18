@@ -15,6 +15,7 @@ func _ready():
 	
 func TakeDamage(value):
 	health -= value
+	print("dwa2")
 		
 
 

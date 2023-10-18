@@ -40,9 +40,9 @@ func _physics_process(delta):
 			velocity.x = (directionX * SPEED)
 		else:
 			velocity.x = move_toward(velocity.x, 0, SPEED)
-		if directionX == 1 and stateMachine.canMoveCheck():
+		if get_global_mouse_position().x > global_position.x and stateMachine.canMoveCheck():
 			sprite.flip_h = false
-		elif directionX == -1 and stateMachine.canMoveCheck():
+		elif get_global_mouse_position().x < global_position.x and stateMachine.canMoveCheck():
 			sprite.flip_h = true
 			
 		var directionY = Input.get_axis("Up", "Down")
@@ -53,7 +53,7 @@ func _physics_process(delta):
 
 		move_and_slide()
 		
-		projectile_rotation.look_at(get_viewport().get_mouse_position())
+		projectile_rotation.look_at(get_global_mouse_position())
 
 func _process(delta):
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
@@ -78,5 +78,5 @@ func fire():
 	get_tree().root.add_child(projectile, true)
 
 
-
-
+func Knockback(force: float, direction: Vector2):
+	velocity = direction.normalized() * force

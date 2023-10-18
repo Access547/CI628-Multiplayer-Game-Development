@@ -2,7 +2,7 @@ extends State
 class_name GolemL
 
 @export var weapon_slash: AnimatedSprite2D
-@onready var collision_shape_2d = $"../../Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D"
+@onready var collision_shape_2d = $"../../Projectile Rotation/Weapon Slash/Area2D/LCollisonBox"
 
 
 func Enter():

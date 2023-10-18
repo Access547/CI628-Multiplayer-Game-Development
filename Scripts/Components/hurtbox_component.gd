@@ -7,6 +7,7 @@ class_name HurtboxComponent
 func Damage(value):
 	if healthComponent:
 		healthComponent.TakeDamage(value)
+		print("dwa")
 		
 
 func Stun(time: int):
