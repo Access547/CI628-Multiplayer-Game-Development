@@ -2,7 +2,7 @@ extends Node
 class_name HealthComponent
 
 
-
+var damageSource: String
 
 @export var maxHealth: int
 @export var stateMachine: StateMachine
@@ -12,16 +12,15 @@ class_name HealthComponent
 func _ready():
 	health = maxHealth
 	
-	
-func TakeDamage(value):
-	health -= value
-	print("dwa2")
-		
 
+func TakeDamage(value: int, source: String):
+	health -= value
+	damageSource = source
+	print(str("===================","\nName: ", get_parent().displayName,"\nDamage Taken: ", value, "\nHealth Remaining: ", health,
+	 "\nDamage Taken from: ", damageSource))
 
 func _process(delta):
 	if health > maxHealth:
 		health = maxHealth
 	if health <= 0:
-		#if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().multiplayer.get_unique_id():
-			stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")
+		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")

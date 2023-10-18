@@ -11,3 +11,4 @@ func Enter():
 func PhysicsUpdate(delta):
 	if character.velocity == Vector2.ZERO:
 		transitioned.emit(self, "CharacterIdleState")
+

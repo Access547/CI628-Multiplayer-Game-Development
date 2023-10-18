@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://co215xd4lk5xs"]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/separation = 2

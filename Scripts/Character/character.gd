@@ -10,6 +10,10 @@ class_name PC
 @onready var display_name_label = $"Display Name Label"
 
 
+
+
+@export var canvasLayer: CanvasLayer
+@export var killFeed: Control
 @export var stateMachine: StateMachine
 @export var multiplayer_synchronizer: MultiplayerSynchronizer
 @export var stunComponent: StunComponent
@@ -17,6 +21,7 @@ class_name PC
 
 var SPEED = 100
 var spawnPos
+var displayName: String
 
 func _ready():
 	if name.begins_with("@"):
@@ -31,6 +36,7 @@ func _ready():
 	
 func SetUpPlayer(name: String):
 	$"Display Name Label".text = name
+	displayName = name
 	
 
 func _physics_process(delta):
@@ -66,8 +72,10 @@ func _process(delta):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "Space")
 			if Input.is_action_just_pressed("AbilityE"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "E")
-		if Input.is_physical_key_pressed(KEY_0):
-			healthComponent.TakeDamage(10)
+		if Input.is_action_just_pressed("Kill Yourself"):
+			healthComponent.TakeDamage(10, "God")
+
+
 
 @rpc("any_peer","call_local")
 func fire():

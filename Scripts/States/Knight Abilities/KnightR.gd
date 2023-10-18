@@ -6,8 +6,9 @@ class_name KnightR
 
 func Enter():
 	sprite.play("Block")
-	healthComponent.immune = true
+	immune = true
 	
 func Exit():
-	healthComponent.immune = false
+	immune = false
+	print("R test")
 

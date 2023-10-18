@@ -2,7 +2,6 @@ extends Node
 
 class_name State
 
-
 var character: CharacterBody2D
 var sprite: AnimatedSprite2D
 

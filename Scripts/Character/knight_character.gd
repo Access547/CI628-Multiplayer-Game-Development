@@ -6,8 +6,8 @@ extends PC
 func _on_area_2d_area_entered(area):
 	if area.is_in_group("Player"):
 		if area != self.get_node("Hurtbox Component"):
-			area.Damage(2)
-			
+			area.Damage(2, displayName)
+			print(area.get_parent().name)
 
 
 func _on_sprite_animation_finished():

@@ -10,6 +10,9 @@ var classSelected = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Name.text = GameManager.names.pick_random()
+	
+	
 	multiplayer.peer_connected.connect(PlayerConnected)
 	multiplayer.peer_disconnected.connect(PlayerDisconnected)
 	multiplayer.connected_to_server.connect(ConnectedToServer)
