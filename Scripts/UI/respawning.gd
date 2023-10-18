@@ -11,4 +11,5 @@ func _process(delta):
 
 
 func _on_timer_timeout():
-	stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
+	if stateMachine.currentState is CharacterRespawningState:
+		stateMachine.currentState.Respawn()

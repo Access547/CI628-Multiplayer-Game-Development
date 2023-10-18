@@ -5,11 +5,13 @@ class_name GolemL
 @onready var collision_shape_2d = $"../../Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D"
 
 func Enter():
-	weapon_slash.visible = true
-	weapon_slash.play("default")
 	sprite.play("Attack")
-	collision_shape_2d.disabled = false
 
+func Update(delta):
+	if sprite.frame == 4:
+		weapon_slash.visible = true
+		weapon_slash.play("default")
+		collision_shape_2d.disabled = false
 
 func Exit():
 	collision_shape_2d.disabled = true

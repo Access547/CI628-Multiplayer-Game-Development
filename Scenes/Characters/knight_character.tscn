@@ -1,7 +1,7 @@
 [gd_scene load_steps=60 format=3 uid="uid://cbyvj756fyetn"]
 
 [ext_resource type="Texture2D" uid="uid://deia6t8ce8hdp" path="res://Assets/Art/Character/minifolks by LYSeeK/Humans/Outline/MiniShieldMan.png" id="1_74wug"]
-[ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_k8s4n"]
+[ext_resource type="Script" path="res://Scripts/Character/knight_character.gd" id="1_qn0cl"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterStateMachine.gd" id="3_uj2vy"]
 [ext_resource type="PackedScene" uid="uid://vi6oha8iu5ft" path="res://Scenes/DebugTools/StateLabel.tscn" id="4_atqvy"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterIdleState.gd" id="4_r1sqb"]
@@ -15,9 +15,9 @@
 [ext_resource type="Script" path="res://Scripts/States/CharacterRespawningState.gd" id="10_oc4jk"]
 [ext_resource type="Texture2D" uid="uid://bh0gb8tq7x8kc" path="res://Assets/Art/Effects/Weapon slash.png" id="10_y57jf"]
 [ext_resource type="Script" path="res://Scripts/States/CharacterStunnedState.gd" id="11_8hj44"]
-[ext_resource type="Script" path="res://Scripts/Attacks/Weapon Slash.gd" id="11_gmri2"]
 [ext_resource type="PackedScene" uid="uid://56mf3cu3a73i" path="res://Scenes/UI/respawning.tscn" id="15_pnk6o"]
 [ext_resource type="Script" path="res://Scripts/Components/stun_component.gd" id="17_4sl1k"]
+[ext_resource type="PackedScene" uid="uid://cx4bi7d1ujbn5" path="res://Scenes/UI/progress_bar.tscn" id="19_gpe6g"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i7k61"]
 atlas = ExtResource("1_74wug")
@@ -268,6 +268,10 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4i4mf"]
 size = Vector2(11, 13)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
+radius = 4.0
+height = 12.0
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_boqm3"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -285,42 +289,46 @@ properties/3/path = NodePath("Projectile Rotation:rotation")
 properties/3/spawn = true
 properties/3/sync = true
 properties/3/watch = false
-properties/4/path = NodePath("Health Component:immune")
+properties/4/path = NodePath("Projectile Rotation/Weapon Slash:visible")
 properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
-properties/5/path = NodePath("Projectile Rotation/Weapon Slash:visible")
+properties/5/path = NodePath("Projectile Rotation/Weapon Slash:animation")
 properties/5/spawn = true
 properties/5/sync = true
 properties/5/watch = false
-properties/6/path = NodePath("Projectile Rotation/Weapon Slash:animation")
+properties/6/path = NodePath("Projectile Rotation/Weapon Slash:frame")
 properties/6/spawn = true
 properties/6/sync = true
 properties/6/watch = false
-properties/7/path = NodePath("Projectile Rotation/Weapon Slash:frame")
+properties/7/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D:disabled")
 properties/7/spawn = true
 properties/7/sync = true
 properties/7/watch = false
-properties/8/path = NodePath("Projectile Rotation/Weapon Slash/Area2D/CollisionShape2D:disabled")
+properties/8/path = NodePath("Camera2D:position")
 properties/8/spawn = true
 properties/8/sync = true
 properties/8/watch = false
-properties/9/path = NodePath("Camera2D:position")
+properties/9/path = NodePath("Sprite:frame")
 properties/9/spawn = true
 properties/9/sync = true
 properties/9/watch = false
-properties/10/path = NodePath("Sprite:frame")
+properties/10/path = NodePath("Display Name Label:text")
 properties/10/spawn = true
 properties/10/sync = true
 properties/10/watch = false
-properties/11/path = NodePath("Display Name Label:text")
+properties/11/path = NodePath("ProgressBar:value")
 properties/11/spawn = true
 properties/11/sync = true
 properties/11/watch = false
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_25juu"]
-radius = 4.0
-height = 12.0
+properties/12/path = NodePath("Health Component:health")
+properties/12/spawn = true
+properties/12/sync = true
+properties/12/watch = false
+properties/13/path = NodePath("ProgressBar:visible")
+properties/13/spawn = true
+properties/13/sync = true
+properties/13/watch = false
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1iqvi"]
 atlas = ExtResource("10_y57jf")
@@ -387,9 +395,13 @@ height = 128
 fill = 1
 fill_from = Vector2(0.491071, 0.5)
 
-[node name="Knight" type="CharacterBody2D" groups=["Player"]]
+[node name="Knight" type="CharacterBody2D" node_paths=PackedStringArray("stateMachine", "multiplayer_synchronizer", "stunComponent", "healthComponent") groups=["Player"]]
 collision_mask = 2
-script = ExtResource("1_k8s4n")
+script = ExtResource("1_qn0cl")
+stateMachine = NodePath("CharacterStateMachine")
+multiplayer_synchronizer = NodePath("MultiplayerSynchronizer")
+stunComponent = NodePath("StunComponent")
+healthComponent = NodePath("Health Component")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2wkft")
@@ -403,6 +415,24 @@ visible = false
 position = Vector2(0.5, 8.5)
 shape = SubResource("RectangleShape2D_4i4mf")
 
+[node name="Health Component" parent="." node_paths=PackedStringArray("stateMachine") instance=ExtResource("7_7beb4")]
+maxHealth = 10
+stateMachine = NodePath("../CharacterStateMachine")
+health = 10
+
+[node name="StunComponent" type="Node" parent="."]
+script = ExtResource("17_4sl1k")
+
+[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent", "stunComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
+visible = false
+healthComponent = NodePath("../Health Component")
+stunComponent = NodePath("../StunComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
+position = Vector2(0, 9)
+shape = SubResource("CapsuleShape2D_25juu")
+debug_color = Color(0.894118, 0, 0.780392, 0.419608)
+
 [node name="CharacterStateMachine" type="Node" parent="." node_paths=PackedStringArray("character", "sprite", "initialState")]
 script = ExtResource("3_uj2vy")
 character = NodePath("..")
@@ -415,33 +445,36 @@ script = ExtResource("4_r1sqb")
 [node name="CharacterMoveState" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("5_occhi")
 
-[node name="KnightR" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
+[node name="R" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
 script = ExtResource("6_swnxn")
 healthComponent = NodePath("../../Health Component")
 canMove = false
 
-[node name="KnightL" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
+[node name="L" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("weapon_slash")]
 script = ExtResource("7_ydqlp")
 weapon_slash = NodePath("../../Projectile Rotation/Weapon Slash")
 canMove = false
 canAttack = false
 
-[node name="KnightSpace" type="Node" parent="CharacterStateMachine"]
+[node name="Space" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("8_amcu6")
 dashSpeed = 1000.0
 canAttack = false
 
-[node name="KnightE" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
+[node name="E" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
 script = ExtResource("9_w66s7")
 healthComponent = NodePath("../../Health Component")
 canMove = false
 canAttack = false
 
-[node name="CharacterRespawningState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent")]
+[node name="CharacterRespawningState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("healthComponent", "respawning")]
 script = ExtResource("10_oc4jk")
 healthComponent = NodePath("../../Health Component")
+respawning = NodePath("../../CanvasLayer/Respawning")
 canMove = false
 canAttack = false
+immune = true
+canBeStunned = false
 
 [node name="CharacterStunnedState" type="Node" parent="CharacterStateMachine" node_paths=PackedStringArray("stunComponent")]
 script = ExtResource("11_8hj44")
@@ -461,20 +494,6 @@ character = NodePath("../CharacterStateMachine")
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_boqm3")
 
-[node name="Health Component" parent="." node_paths=PackedStringArray("stateMachine") instance=ExtResource("7_7beb4")]
-maxHealth = 10
-stateMachine = NodePath("../CharacterStateMachine")
-
-[node name="Hurtbox Component" parent="." node_paths=PackedStringArray("healthComponent", "stunComponent") groups=["Player"] instance=ExtResource("8_cc2di")]
-visible = false
-healthComponent = NodePath("../Health Component")
-stunComponent = NodePath("../StunComponent")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox Component"]
-position = Vector2(0, 9)
-shape = SubResource("CapsuleShape2D_25juu")
-debug_color = Color(0.894118, 0, 0.780392, 0.419608)
-
 [node name="Projectile Rotation" type="Marker2D" parent="."]
 position = Vector2(0, 9)
 
@@ -489,7 +508,6 @@ frame = 2
 visible = false
 collision_layer = 2
 collision_mask = 2
-script = ExtResource("11_gmri2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Projectile Rotation/Weapon Slash/Area2D"]
 position = Vector2(-0.936317, 2.03059)
@@ -498,12 +516,6 @@ shape = SubResource("CapsuleShape2D_v5q25")
 disabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Respawning" parent="CanvasLayer" node_paths=PackedStringArray("stateMachine") instance=ExtResource("15_pnk6o")]
-visible = false
-stateMachine = NodePath("../../CharacterStateMachine")
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 position = Vector2(0, 9)
@@ -519,8 +531,18 @@ offset_bottom = 16.0
 theme_override_font_sizes/font_size = 8
 text = "player"
 
-[node name="StunComponent" type="Node" parent="."]
-script = ExtResource("17_4sl1k")
+[node name="ProgressBar" parent="." node_paths=PackedStringArray("healthComponent") instance=ExtResource("19_gpe6g")]
+offset_left = -20.0
+offset_top = 16.0
+offset_right = 20.0
+offset_bottom = 20.0
+healthComponent = NodePath("../Health Component")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Respawning" parent="CanvasLayer" node_paths=PackedStringArray("stateMachine") instance=ExtResource("15_pnk6o")]
+visible = false
+stateMachine = NodePath("../../CharacterStateMachine")
 
 [connection signal="animation_finished" from="Sprite" to="." method="_on_sprite_animation_finished"]
 [connection signal="animation_finished" from="Projectile Rotation/Weapon Slash" to="." method="_on_weapon_slash_animation_finished"]

@@ -9,12 +9,13 @@ var stunImmuneTime
 
 
 func Stun(time: int):
-	stun_time = time
-	stunImmuneTime = 300
-	canBeStunned = false
-	get_parent().stateMachine.currentState.transitioned.emit(get_parent().stateMachine.currentState, "CharacterStunnedState")
-
-
+	if !(get_parent().stateMachine.currentState is CharacterRespawningState):
+		stun_time = time
+		stunImmuneTime = 300
+		canBeStunned = false
+		get_parent().stateMachine.currentState.transitioned.emit(get_parent().stateMachine.currentState, "CharacterStunnedState")
+		
+		
 func _process(delta):
 	#print(stun_time)
 	if get_parent().stateMachine.currentState != CharacterStunnedState:
