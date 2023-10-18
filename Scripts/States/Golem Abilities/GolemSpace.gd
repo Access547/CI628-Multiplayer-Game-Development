@@ -19,5 +19,7 @@ func PhysicsUpdate(delta):
 
 
 func Exit():
+	
 	collision_shape_2d.disabled = false
+	await get_tree().create_timer(0.1).timeout
 	collision_shape_2d.disabled = true
