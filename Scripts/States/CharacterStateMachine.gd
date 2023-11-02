@@ -23,7 +23,7 @@ func _ready():
 func _process(delta):
 	if currentState:
 		currentState.Update(delta)
-		print(str("Current State for ",character.displayName,("("),  character.name,")", " ", currentState ))
+		#print(str("Current State for ",character.displayName,("("),  character.name,")", " ", currentState ))
 
 func _physics_process(delta):
 	if currentState:

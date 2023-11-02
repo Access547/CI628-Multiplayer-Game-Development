@@ -30,7 +30,7 @@ func KillFeed():
 
 func Exit():
 	test += 1
-	print(str("test: ", test))
+	print(str("Respawn Count for ",character.displayName, " ", test))
 
 	
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():

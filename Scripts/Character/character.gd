@@ -22,21 +22,24 @@ class_name PC
 var SPEED = 100
 var spawnPos
 var displayName: String
+var id
 
 func _ready():
 	if name.begins_with("@"):
 		multiplayer_synchronizer.set_multiplayer_authority(1)
+		#name = "2"
 	else:
 		multiplayer_synchronizer.set_multiplayer_authority(str(name).to_int())
 	
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		camera.make_current()
 		spawnPos = position
-		
 	
-func SetUpPlayer(name: String):
+	
+func SetUpPlayer(name: String, playerID: int):
 	$"Display Name Label".text = name
 	displayName = name
+	id = playerID
 	
 
 func _physics_process(delta):
@@ -73,7 +76,7 @@ func _process(delta):
 			if Input.is_action_just_pressed("AbilityE"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "E")
 		if Input.is_action_just_pressed("Kill Yourself"):
-			healthComponent.TakeDamage(10, "God")
+			healthComponent.TakeDamage(10,displayName, "God")
 
 
 
@@ -88,3 +91,10 @@ func fire():
 
 func Knockback(force: float, direction: Vector2):
 	velocity = direction.normalized() * force
+
+
+
+@rpc("any_peer", "call_local")
+func TakeDamage(amount):
+	healthComponent.TakeDamage(amount, name, "dwa")
+	print("dwadwa")

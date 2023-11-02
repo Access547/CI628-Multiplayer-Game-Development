@@ -5,6 +5,8 @@ extends Control
 
 @onready var displayName = $Name
 
+
+var nameText = "placeholder"
 var peer
 var classSelected = 0
 
@@ -25,7 +27,7 @@ func _ready():
 
 #Called on server and clients
 func PlayerConnected(id):
-	print("Player Connected! ID: " + str(id))
+	print("Player Connected! ID: " + str(id, nameText))
 
 #Called on server and clients
 func PlayerDisconnected(id):
@@ -35,10 +37,13 @@ func PlayerDisconnected(id):
 	for i in players:
 		if i.name == str(id):
 			i.queue_free()
+
+
 #Called only from clients
 func ConnectedToServer():
 	print("Connected to Server!")
 	SendPlayerInformation.rpc_id(1, displayName.text, multiplayer.get_unique_id(), classSelected)
+
 
 #Called only from clients
 func ConnectionFailed():
@@ -104,3 +109,13 @@ func _on_start_game_pressed():
 
 func _on_option_button_item_selected(index):
 	classSelected = $OptionButton.selected
+
+
+func _on_name_text_changed(new_text):
+	nameText = $Name.text
+
+
+
+
+#Attack something -> grabs the ID of the thing it's attacking -> 
+#Tell server that this ID should take X damage -> applies it

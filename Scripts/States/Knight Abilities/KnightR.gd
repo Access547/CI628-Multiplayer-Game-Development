@@ -10,5 +10,4 @@ func Enter():
 	
 func Exit():
 	immune = false
-	print("R test")
 

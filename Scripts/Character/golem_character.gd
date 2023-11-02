@@ -22,7 +22,7 @@ func _on_weapon_slash_animation_finished():
 func _on_area_2d_area_entered(area):
 	if area.is_in_group("Player"):
 		if area != self.get_node("Hurtbox Component"):
-			area.Damage(3, displayName)
+			area.Damage(3,displayName, displayName)
 			if stunComponent.canBeStunned:
 				area.Stun(120)
 
@@ -31,14 +31,14 @@ func _on_golem_r_hitbox_area_entered(area):
 		if area.is_in_group("Player"):
 			if area != self.get_node("Hurtbox Component"):
 				print("dwa2")
-				area.Damage(5, displayName)
+				area.Damage(5,displayName, displayName)
 				area.get_parent().Knockback(1250, area.get_parent().position - position)
 
 
 func _on_golem_space_hitbox_area_entered(area):
 		if area.is_in_group("Player"):
 			if area != self.get_node("Hurtbox Component"):
-				area.Damage(2, displayName)
+				area.Damage(2,displayName, displayName)
 				area.get_parent().Knockback(1000, area.get_parent().position - position)
 
 
@@ -58,7 +58,7 @@ func _on_golem_e_hitbox_area_exited(area):
 func _on_e_timer_timeout():
 	
 	for area in eArray:
-		area.Damage(3, displayName)
+		area.Damage(3,displayName, displayName)
 	stompsLeft -= 1
 	if stompsLeft <= 0:
 		$GolemEHitbox/ETimer.stop()
