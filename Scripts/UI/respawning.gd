@@ -5,10 +5,11 @@ extends Control
 @onready var timer = $Timer
 @export var stateMachine: StateMachine
 
-func _process(delta):
+func _process(_delta):
 	time_left.text = str("Respawning in: ", int(timer.time_left))
 
 
 func _on_timer_timeout():
 	if stateMachine.currentState is CharacterRespawningState:
-		stateMachine.currentState.Respawn()
+		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterIdleState")
+

@@ -10,7 +10,7 @@ func Enter():
 	sprite.play("Jump")
 	
 	
-func PhysicsUpdate(delta):
+func PhysicsUpdate(_delta):
 	
 	if character.position.distance_to(destination) > 10:
 		character.velocity = character.position.direction_to(destination) * 300

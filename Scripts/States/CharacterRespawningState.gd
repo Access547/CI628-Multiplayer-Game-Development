@@ -9,7 +9,7 @@ var test = 0
 
 func Enter():
 	
-
+	#GameManager.CreateKillLabel.rpc_id(get_parent().get_parent().multiplayer.get_unique_id(), healthComponent.damageSource, character.displayName)
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
 		respawning.visible = true
 		respawning.timer.start()
@@ -22,11 +22,8 @@ func Enter():
 
 func Respawn():
 	transitioned.emit(self, "CharacterIdleState")
-	KillFeed()
 	
 
-func KillFeed():
-	character.get_parent().CreateKillLabel.rpc(healthComponent.damageSource, character.displayName)
 
 func Exit():
 	test += 1

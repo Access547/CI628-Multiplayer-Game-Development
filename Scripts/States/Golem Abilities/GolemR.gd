@@ -7,7 +7,7 @@ class_name GolemR
 func Enter():
 	sprite.play("Block")
 	
-func Update(delta):
+func Update(_delta):
 	if sprite.frame == 4:
 		weapon_slash.visible = true
 		weapon_slash.play("default")

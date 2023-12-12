@@ -1,6 +1,7 @@
 extends Control
-
-@export var address = "90.214.148.221"
+#new one > 90.214.148.175
+#old one > 90.214.148.221
+@export var address = "90.214.148.175"
 @export var port = 8910
 
 @onready var displayName = $Name
@@ -51,14 +52,14 @@ func ConnectionFailed():
 
 
 @rpc("any_peer")
-func SendPlayerInformation(name, id, classSelected):
+func SendPlayerInformation(name1, id, classSelected1):
 	
 	if !GameManager.players.has(id):
 		GameManager.players[id] = {
-			"name": name,
+			"name": name1,
 			"id": id,
 			"displayName": displayName.text,
-			"class": classSelected
+			"class": classSelected1
 		}
 		
 	if multiplayer.is_server():
@@ -107,15 +108,12 @@ func _on_start_game_pressed():
 
 
 
-func _on_option_button_item_selected(index):
+func _on_option_button_item_selected(_index):
 	classSelected = $OptionButton.selected
 
 
-func _on_name_text_changed(new_text):
+func _on_name_text_changed(_new_text):
 	nameText = $Name.text
 
 
 
-
-#Attack something -> grabs the ID of the thing it's attacking -> 
-#Tell server that this ID should take X damage -> applies it

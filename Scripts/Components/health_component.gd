@@ -20,7 +20,7 @@ func TakeDamage(value: int,victim: String, source: String):
 		PrintDamage(victim, source, value)
 
 
-func _process(delta):
+func _process(_delta):
 	if health > maxHealth:
 		health = maxHealth
 	if health <= 0:

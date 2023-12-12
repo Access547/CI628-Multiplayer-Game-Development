@@ -36,13 +36,13 @@ func _ready():
 		spawnPos = position
 	
 	
-func SetUpPlayer(name: String, playerID: int):
-	$"Display Name Label".text = name
-	displayName = name
+func SetUpPlayer(name1: String, playerID: int):
+	$"Display Name Label".text = name1
+	displayName = name1
 	id = playerID
 	
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		var directionX = Input.get_axis("Left", "Right")
 		if directionX and stateMachine.canMoveCheck():
@@ -64,7 +64,7 @@ func _physics_process(delta):
 		
 		projectile_rotation.look_at(get_global_mouse_position())
 
-func _process(delta):
+func _process(_delta):
 	if multiplayer_synchronizer.get_multiplayer_authority() == multiplayer.get_unique_id():
 		if stateMachine.currentState.canAttack:
 			if Input.is_action_just_pressed("AbilityL"):

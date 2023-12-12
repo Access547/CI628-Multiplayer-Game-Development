@@ -11,7 +11,7 @@ class_name KnightL
 func Enter():
 	sprite.play("Attack")
 
-func Update(delta):
+func Update(_delta):
 	if sprite.frame == 2:
 		weapon_slash.visible = true
 		weapon_slash.play("default")

@@ -31,19 +31,20 @@ func _physics_process(delta):
 
 
 func on_child_transition(state, newStateName):
-	if state != currentState:
-		return
+	#if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
+		if state != currentState:
+			return
+			
+		var newState = states.get(newStateName)
+		if !newState:
+			return
+			
+		if currentState:
+			currentState.Exit()
+			
+		newState.Enter()
 		
-	var newState = states.get(newStateName)
-	if !newState:
-		return
-		
-	if currentState:
-		currentState.Exit()
-		
-	newState.Enter()
-	
-	currentState = newState
+		currentState = newState
 
 
 func canMoveCheck():

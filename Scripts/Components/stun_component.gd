@@ -16,7 +16,7 @@ func Stun(time: int):
 		get_parent().stateMachine.currentState.transitioned.emit(get_parent().stateMachine.currentState, "CharacterStunnedState")
 		
 		
-func _process(delta):
+func _process(_delta):
 	#print(stun_time)
 	if get_parent().stateMachine.currentState != CharacterStunnedState:
 		if stunImmuneTime:

@@ -3099,7 +3099,7 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_w2nh0")
 pattern_0 = SubResource("TileMapPattern_o0rit")
 
-[node name="Level" type="Node2D"]
+[node name="Level" type="Node2D" groups=["Level"]]
 position = Vector2(-19, -40)
 script = ExtResource("1_kfb72")
 
@@ -3143,4 +3143,4 @@ position = Vector2(-3123, -616)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Kill Feed" parent="CanvasLayer" instance=ExtResource("4_ml34d")]
+[node name="Kill Feed" parent="CanvasLayer" groups=["KillFeed"] instance=ExtResource("4_ml34d")]
