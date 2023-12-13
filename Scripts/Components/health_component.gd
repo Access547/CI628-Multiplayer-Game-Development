@@ -17,7 +17,8 @@ func TakeDamage(value: int,victim: String, source: String):
 	if !get_parent().stateMachine.currentState.immune:
 		health -= value
 		damageSource = source
-		PrintDamage(victim, source, value)
+		print(source)
+		#PrintDamage(victim, source, value)
 
 
 func _process(_delta):

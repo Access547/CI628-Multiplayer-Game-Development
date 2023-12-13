@@ -1,7 +1,7 @@
 extends Control
 #new one > 90.214.148.175
 #old one > 90.214.148.221
-@export var address = "90.214.148.175"
+@export var address = "90.202.107.213"
 @export var port = 8910
 
 @onready var displayName = $Name
