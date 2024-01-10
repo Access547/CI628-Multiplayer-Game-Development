@@ -1,11 +1,10 @@
 extends State
 class_name GolemE
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func Enter():
+	if $"../../GolemEHitbox/ETimer".is_stopped():
+		$"../../GolemEHitbox/ETimer".start()
+		$"../../GolemEHitbox/ECollisonBox".disabled = false
+		character.stompsLeft = 5
+		sprite.play("Walk")
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

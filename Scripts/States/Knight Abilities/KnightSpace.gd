@@ -11,7 +11,7 @@ func Enter():
 	character.SPEED = dashSpeed
 
 
-func Update(delta):
+func Update(_delta):
 	
 	direction = character.velocity.normalized()
 	character.velocity = direction * character.SPEED

@@ -1,15 +1,21 @@
 extends Control
-
-@export var address = "90.214.148.221"
+#new one > 90.214.148.175
+#old one > 90.214.148.221
+@export var address = "90.202.107.213"
 @export var port = 8910
 
 @onready var displayName = $Name
 
+
+var nameText = "placeholder"
 var peer
 var classSelected = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$Name.text = GameManager.names.pick_random()
+	
+	
 	multiplayer.peer_connected.connect(PlayerConnected)
 	multiplayer.peer_disconnected.connect(PlayerDisconnected)
 	multiplayer.connected_to_server.connect(ConnectedToServer)
@@ -22,7 +28,7 @@ func _ready():
 
 #Called on server and clients
 func PlayerConnected(id):
-	print("Player Connected! ID: " + str(id))
+	print("Player Connected! ID: " + str(id, nameText))
 
 #Called on server and clients
 func PlayerDisconnected(id):
@@ -32,10 +38,13 @@ func PlayerDisconnected(id):
 	for i in players:
 		if i.name == str(id):
 			i.queue_free()
+
+
 #Called only from clients
 func ConnectedToServer():
 	print("Connected to Server!")
 	SendPlayerInformation.rpc_id(1, displayName.text, multiplayer.get_unique_id(), classSelected)
+
 
 #Called only from clients
 func ConnectionFailed():
@@ -43,14 +52,16 @@ func ConnectionFailed():
 
 
 @rpc("any_peer")
-func SendPlayerInformation(name, id, classSelected):
+func SendPlayerInformation(name1, id, classSelected1):
 	
 	if !GameManager.players.has(id):
 		GameManager.players[id] = {
-			"name": name,
+			"name": name1,
 			"id": id,
 			"displayName": displayName.text,
-			"class": classSelected
+			"class": classSelected1,
+			"kills": 0,
+			"deaths": 0
 		}
 		
 	if multiplayer.is_server():
@@ -99,5 +110,12 @@ func _on_start_game_pressed():
 
 
 
-func _on_option_button_item_selected(index):
+func _on_option_button_item_selected(_index):
 	classSelected = $OptionButton.selected
+
+
+func _on_name_text_changed(_new_text):
+	nameText = $Name.text
+
+
+

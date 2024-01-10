@@ -9,11 +9,13 @@ class_name KnightL
 
 
 func Enter():
-	weapon_slash.visible = true
-	weapon_slash.play("default")
 	sprite.play("Attack")
-	collision_shape_2d.disabled = false
 
+func Update(_delta):
+	if sprite.frame == 2:
+		weapon_slash.visible = true
+		weapon_slash.play("default")
+		collision_shape_2d.disabled = false
 
 func Exit():
 	collision_shape_2d.disabled = true

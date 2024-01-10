@@ -11,7 +11,7 @@ func Enter():
 	stun_time = stunComponent.stunTime
 	
 
-func Update(delta):
+func Update(_delta):
 	if stun_time:
 		stun_time -= 1
 		if stun_time <= 0:
