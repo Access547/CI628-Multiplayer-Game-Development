@@ -59,7 +59,9 @@ func SendPlayerInformation(name1, id, classSelected1):
 			"name": name1,
 			"id": id,
 			"displayName": displayName.text,
-			"class": classSelected1
+			"class": classSelected1,
+			"kills": 0,
+			"deaths": 0
 		}
 		
 	if multiplayer.is_server():

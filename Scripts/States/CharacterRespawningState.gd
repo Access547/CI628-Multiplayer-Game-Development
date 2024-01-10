@@ -8,17 +8,19 @@ var test = 0
 @export var respawning: Control
 
 func Enter():
-	
-	#GameManager.CreateKillLabel.rpc_id(get_parent().get_parent().multiplayer.get_unique_id(), healthComponent.damageSource, character.displayName)
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
 		respawning.visible = true
 		respawning.timer.start()
 		respawning.killed_by.text = str("Killed by: ", healthComponent.damageSource)
-
+		UpdateKD.rpc_id(1)
 	progress_bar.visible = false
 	sprite.play("Death")
 	immune = true
-	
+
+@rpc("any_peer", "call_local")
+func UpdateKD():
+	GameManager.players[get_parent().get_parent().id]["deaths"] += 1
+	#GameManager.players[so]
 
 func Respawn():
 	transitioned.emit(self, "CharacterIdleState")
@@ -32,8 +34,6 @@ func Exit():
 	
 	if get_parent().get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
 		respawning.visible = false
-		immune = false
 		healthComponent.health = healthComponent.maxHealth
-		#character.position = character.spawnPos
 		progress_bar.visible = true
 

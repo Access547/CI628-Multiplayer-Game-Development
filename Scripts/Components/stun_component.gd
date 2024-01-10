@@ -17,7 +17,7 @@ func Stun(time: int):
 		
 		
 func _process(_delta):
-	#print(stun_time)
+	
 	if get_parent().stateMachine.currentState != CharacterStunnedState:
 		if stunImmuneTime:
 			stunImmuneTime -= 1

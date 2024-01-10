@@ -2,7 +2,7 @@ extends Node
 class_name HealthComponent
 
 
-var damageSource: String
+var damageSource
 
 @export var maxHealth: int
 @export var stateMachine: StateMachine
@@ -12,23 +12,27 @@ var damageSource: String
 func _ready():
 	health = maxHealth
 	
-@rpc("any_peer", "call_local")
-func TakeDamage(value: int,victim: String, source: String):
-	if !get_parent().stateMachine.currentState.immune:
-		health -= value
-		damageSource = source
-		print(source)
-		#PrintDamage(victim, source, value)
 
+@rpc("authority", "call_local")
+func TakeDamage(amount, source):
+	if !stateMachine.isImmuneCheck():
+		health -= amount
+		damageSource = source
 
 func _process(_delta):
 	if health > maxHealth:
 		health = maxHealth
-	if health <= 0:
-		stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")
+
+@rpc("authority", "call_local")
+func Die():
+	stateMachine.currentState.transitioned.emit(stateMachine.currentState, "CharacterRespawningState")
 
 
-@rpc("any_peer", "call_local")
-func PrintDamage(victim, source, value):
-	print(str("===================","\nName: ", victim,"\nDamage Taken: ", value, "\nHealth Remaining: ", health,
-	 "\nDamage Taken from: ", source))
+@rpc("authority", "call_local")
+func CreateKillLabel(killer, victim):
+	var killLabel = preload("res://Scenes/UI/Kill.tscn")
+	var label = killLabel.instantiate()
+	label.Create(killer, victim)
+	get_tree().get_first_node_in_group("KillFeed").add_child(label)
+
+

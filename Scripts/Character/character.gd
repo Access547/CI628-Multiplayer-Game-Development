@@ -27,7 +27,6 @@ var id
 func _ready():
 	if name.begins_with("@"):
 		multiplayer_synchronizer.set_multiplayer_authority(1)
-		#name = "2"
 	else:
 		multiplayer_synchronizer.set_multiplayer_authority(str(name).to_int())
 	
@@ -69,14 +68,19 @@ func _process(_delta):
 		if stateMachine.currentState.canAttack:
 			if Input.is_action_just_pressed("AbilityL"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "L")
+				print(str(id, displayName))
 			if Input.is_action_just_pressed("AbilityR"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "R")
 			if Input.is_action_just_pressed("AbilitySpace"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "Space")
 			if Input.is_action_just_pressed("AbilityE"):
 				stateMachine.currentState.transitioned.emit(stateMachine.currentState, "E")
-		if Input.is_action_just_pressed("Kill Yourself"):
-			healthComponent.TakeDamage(10,displayName, "God")
+			if Input.is_action_just_pressed("Open Scoreboard"):
+				$CanvasLayer/Scoreboard.visible = not $CanvasLayer/Scoreboard.visible
+				if $CanvasLayer/Scoreboard.visible:
+					$CanvasLayer/Scoreboard.emit_signal("show")
+				else:
+					$CanvasLayer/Scoreboard.emit_signal("hide")
 
 
 
@@ -93,8 +97,3 @@ func Knockback(force: float, direction: Vector2):
 	velocity = direction.normalized() * force
 
 
-
-@rpc("any_peer", "call_local")
-func TakeDamage(amount):
-	healthComponent.TakeDamage(amount, name, "dwa")
-	print("dwadwa")

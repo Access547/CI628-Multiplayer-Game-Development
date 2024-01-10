@@ -23,7 +23,6 @@ func _ready():
 func _process(delta):
 	if currentState:
 		currentState.Update(delta)
-		#print(str("Current State for ",character.displayName,("("),  character.name,")", " ", currentState ))
 
 func _physics_process(delta):
 	if currentState:
@@ -31,7 +30,7 @@ func _physics_process(delta):
 
 
 func on_child_transition(state, newStateName):
-	#if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
+	if get_parent().multiplayer_synchronizer.get_multiplayer_authority() == get_parent().get_parent().multiplayer.get_unique_id():
 		if state != currentState:
 			return
 			
@@ -49,3 +48,6 @@ func on_child_transition(state, newStateName):
 
 func canMoveCheck():
 	return currentState.canMove
+
+func isImmuneCheck():
+	return currentState.immune
